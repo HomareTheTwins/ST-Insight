@@ -1,4 +1,4 @@
-const CACHE_NAME = "ST-Insight-v1.4";
+const CACHE_NAME = "ST-Insight-v1.5";
 
 const urlsToCache = [
   "/ST-Insight/",
