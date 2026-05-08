@@ -1,0 +1,393 @@
+body{
+font-family:sans-serif;
+margin:10px;
+text-align:center;
+}
+
+button{
+padding:8px;
+margin:3px;
+font-size:13px;
+min-width:70px;
+}
+
+.hidden{
+display:none;
+}
+
+/* 選手ボタン */
+.player-area{
+	display:flex;
+	align-items:center;
+	justify-content:center;	/* 中央寄せ */
+	position:relative;		/* undo配置用 */
+	margin-top:10px;
+}
+
+/* 選手ボタン中央配置 */
+.player-group{
+	display:flex;
+	gap:6px
+}
+
+.playerBtn{
+/* background:#ddd; */
+border:1px solid #666;
+}
+
+.teamA{
+background:#b9f6c4;
+}
+
+.teamB{
+background:#ffcc80;
+}
+/* 
+.selected{
+outline:1px solid #000;
+} */
+
+.playerBtn.selected.teamA{
+border:3px solid #4CAF50;   /* teamAActive と同じ */
+}
+.playerBtn.selected.teamB{
+border:3px solid #ff9800;   /* teamBActive と同じ色 */
+}
+
+#undoBtn{
+	position:absolute;
+	right:0;
+	padding:10px 14px;
+	font-size:14px;
+	min-width:80px;
+
+	background:#ffeaea;           /* 薄い赤 */
+	border:1px solid #f5bcbc;
+	border-radius:10px;
+
+	cursor:pointer;
+	transition:0.2s;
+}
+
+#undoBtn:hover{
+	background:#ffd6d6;
+}
+
+/* スマホ対応 */
+#undoBtn:active{
+	transform:scale(0.95);
+}
+
+#undoBtn:disabled{
+	background:#eee;
+	color:#aaa;
+	border-color:#ddd;
+	cursor:not-allowed;
+}
+
+/* スコアボード */
+
+.scoreboard{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+table-layout:fixed;
+}
+
+.scoreboard td,.scoreboard th{
+border:1px solid black;
+padding:8px;
+}
+
+.scoreboard td:first-child,
+.scoreboard th:first-child{
+width:140px;
+text-align:left;
+padding-left:8px;
+}
+
+.scoreboard th.playerHeader{
+text-align:center;
+}
+/* サービス権表示用 */
+.serverMark{
+display:inline-block;
+width:20px;
+text-align:center;
+}
+
+.playerName{
+display:inline-block;
+}
+
+/* 現在ゲーム */
+
+.currentGame{
+background:#fff59d;
+}
+
+/* 取得ゲームカラー */
+.win{
+background:#CCFFFF;
+}
+
+/* 試合終了ハイライト */
+.matchEnd{
+background:#FFFF00;
+}
+
+/* 得点ボタン */
+.shot-back{background:#ffd6d6;}
+.shot-front{background:#d6eaff;}
+.shot-common{background:#e7d7f2;}
+
+.shot-grid{
+	display:grid;
+	grid-template-columns:repeat(3,1fr);
+	gap:6px;
+	margin-top:10px;
+	padding:10px;
+	border:4px solid #aaa;
+	border-radius:10px;
+
+	position:relative;
+}
+
+/* エラーボタン */
+
+.error-back{background:#ffd6d6;}
+.error-front{background:#d6eaff;}
+.error-common{background:#e7d7f2;}
+.error-fault{background:#e0e0e0;}
+
+/* サーブボタン */
+
+.serve-btn{background:#fff3a0;}
+
+/* フォア/バックオーバーレイ */
+#handOverlay{
+	position:absolute;
+	inset:0;
+	
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	
+	background:rgba(0,0,0,0.s5);
+	
+	z-index:100;
+}
+
+/* popup共通 */
+.hand-popup{
+	padding:20px;
+	border-radius:12px;
+	
+	box-shadow:0 4px 12px rgba(0,0,0,0.2);
+	
+	display:flex;
+	flex-direction:column;
+	gap:10px;
+	
+	min-width:180px;
+	
+	animation:popupIn 0.15s ease;
+}
+
+/* 得点時popup */
+.win-popup{
+	background:#e8f5e9;
+	border:2px solid #66bb6a;
+}
+
+/* 失点時popup */
+.error-popup{
+	background:#ffebee;
+	border:2px solid #ef5350;
+}
+
+/* popupタイトル */
+.hand-title{
+	font-size:18px;
+	font-weight:bold;
+	text-align:center;
+}
+
+/* popupサブタイトル */
+.hand-subtitle{
+	font-size:14px;
+	text-align:center;
+	color:#666;
+}
+
+@keyframes popupIn{
+	from{
+		transform:scale(0.9);
+		opacity:0;
+	}
+	to{
+		transform:scale(1);
+		opacity:1;
+	}
+}
+/* どちらのペアが選択されているか */
+.teamAActive{
+border-color:#4CAF50;
+}
+
+.teamBActive{
+border-color:#ff9800;
+}
+
+/* トグルボタン表示 */
+.stats-row{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr; /* 左・中央・右 */
+  gap:10px;
+  margin-top:10px;
+}
+
+/* スマホ縦は1列に戻す */
+@media (max-width:600px){
+	.player-area{
+		flex-direction:row;
+	}
+
+	#undoBtn{
+		font-size:13px;
+		padding:8px 10px;
+	}
+	
+  .stats-row{
+    grid-template-columns:1fr;
+  }
+}
+
+.stats-block{
+  text-align:left;
+}
+
+/* ボタン */
+.stat-btn{
+  width:100%;
+  padding:8px;
+  border:none;
+  border-radius:6px;
+  font-weight:bold;
+}
+
+/* 表示エリア */
+.stat-area{
+  margin-top:6px;
+  padding:8px;
+  border-radius:8px;
+}
+
+/* ===== 色統一（ボタン＋中身） ===== */
+
+/* 得点履歴 */
+.history .stat-btn{
+  background:#ffe0b2;
+}
+.history .stat-area{
+  background:#fff3e0;
+}
+
+/* サーブ確率 */
+.stats .stat-btn{
+  background:#afeeee;
+}
+.stats .stat-area{
+  background:#e0ffff;
+}
+
+/* ショット集計 */
+.shot .stat-btn{
+  background:#c8e6c9;
+}
+.shot .stat-area{
+  background:#e8f5e9;
+}
+
+.stats-line{
+  display:grid;
+  grid-template-columns: 60px 1fr 1fr;
+  gap:2px;
+  margin-bottom:2px;
+}
+
+/* 全ショット表示トグル */
+.shot-header-row{
+	display:flex;
+	justify-content:space-between;
+	align-items:center;
+
+	margin-bottom:8px;
+}
+
+.shot-title{
+	font-weight:bold;
+	font-size:16px;
+}
+
+.shot-toggle-btn{
+	padding:6px 10px;
+	font-size:12px;
+
+	border-radius:8px;
+	border:1px solid #ccc;
+
+	background:#fff;
+	cursor:pointer;
+}
+
+.shot-toggle-btn:hover{
+	background:#f0f0f0;
+}
+
+
+.stats-line .name{
+  text-align:left;
+  font-weight:bold;
+}
+
+.stats-line .stat{
+  text-align:left;
+}
+
+.toggle-header{
+	display:flex;
+	justify-content:space-between;
+	align-items:center;
+
+	padding:10px 12px;
+	margin-top:6px;
+
+	background:#b5f2b5;
+	border-radius:8px;
+
+	font-size:16px;		// for iphone
+	font-weight:bold;
+	cursor:pointer;
+
+	user-select:none;
+}
+
+.toggle-header:hover{
+	background:#79db74;
+}
+
+.toggle-icon{
+	font-size:12px;
+	color:#666;
+}
+
+/* 次の試合ボタン */
+#nextMatchBtn{
+font-size:18px;
+padding:14px 28px;
+background:#4CAF50;
+color:white;
+border:none;
+border-radius:8px;
+}

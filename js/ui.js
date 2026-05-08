@@ -1,0 +1,498 @@
+/*
+ ST-Insight
+ Copyright © Takashi SAITO
+ 無断転載・再配布禁止
+*/
+
+/* =====================================================
+   スコアボード作成
+   ・ゲーム数に応じた表生成
+   ・選手名表示
+   ・サーバー表示と現在ゲームハイライト更新
+   ===================================================== */
+function createScoreboard(){
+	let table=document.getElementById("scoreboard")
+
+	let html="<tr><th class='playerHeader'>PLAYER</th>"
+	
+	for(let i=1;i<=state.settings.games;i++){
+		html+="<th id='h"+i+"'>"+i+"G</th>"
+	}
+
+	html+="<th>GAME</th></tr>"
+
+	let nameA=state.isSingles
+	?state.singleA
+	:state.players.A1+" & "+state.players.A2
+
+	let nameB=state.isSingles
+	?state.singleB
+	:state.players.B1+" & "+state.players.B2
+
+	html+="<tr><td id='pairA'></td>"
+
+	for(let i=1;i<=state.settings.games;i++){
+		html+="<td id='g"+i+"A'>-</td>"
+	}
+
+	html+="<td id='gameA'>0</td></tr>"
+
+	html+="<tr><td id='pairB'></td>"
+
+	for(let i=1;i<=state.settings.games;i++){
+		html+="<td id='g"+i+"B'>-</td>"
+	}
+
+	html+="<td id='gameB'>0</td></tr>"
+
+	table.innerHTML=html
+
+	updateServerMark()
+	updateCurrentGameHighlight()
+}
+
+/* =====================================================
+   現在ゲームのポイント表示更新
+   ===================================================== */
+function updatePoints(){
+	let g=state.score.currentGame
+	document.getElementById("g"+g+"A").innerText=state.score.pointA
+	document.getElementById("g"+g+"B").innerText=state.score.pointB
+	
+	renderScoreboard()
+}
+
+function renderScoreboard(){
+	// スコアボードのハイライト等を削除
+	document.querySelectorAll(".scoreboard td").forEach(td=>{
+		td.classList.remove("win")
+	})
+	
+	// 取得ゲームのハイライト表示
+	for(let i=1; i<=state.settings.games; i++){
+		let winner = state.gameResults[i]
+		
+		if(!winner) continue
+		
+		let cell = document.getElementById("g"+i+winner)
+		
+		if(cell){
+			cell.classList.add("win")
+		}
+	}
+}
+/* =====================================================
+   サーバー表示更新
+   ・サービス権がある側の選手名の前に○を表示
+   ===================================================== */
+function updateServerMark(){
+	let markA = state.service === "A"?"○":""
+	let markB = state.service === "B"?"○":""
+
+	let nameA = state.isSingles ? state.singleA : state.players.A1 + " & " + state.players.A2
+	let nameB = state.isSingles ? state.singleB : state.players.B1 + " & " + state.players.B2
+
+	document.getElementById("pairA").innerHTML =
+	"<span class='serverMark'>"+markA+"</span><span class='playerName'>"+nameA+"</span>"
+
+	document.getElementById("pairB").innerHTML =
+	"<span class='serverMark'>"+markB+"</span><span class='playerName'>"+nameB+"</span>"
+}
+
+/* =====================================================
+   現在進行中ゲームのハイライト更新
+   ===================================================== */
+function updateCurrentGameHighlight(){
+	// 削除
+	document.querySelectorAll(".currentGame").forEach(el=>{
+		el.classList.remove("currentGame")
+	})
+
+	if(state.matchFinished) return
+
+	let g = state.score.currentGame
+
+	if(g > state.settings.games) return
+
+	let cellA = document.getElementById("g"+g+"A")
+	let cellB = document.getElementById("g"+g+"B")
+
+	if(cellA) cellA.classList.add("currentGame")
+	if(cellB) cellB.classList.add("currentGame")
+}
+
+function highlightWinner(){
+	// 削除
+	document.querySelectorAll(".matchEnd").forEach(el=>{
+		el.classList.remove("matchEnd")
+	})
+	
+	const win=Math.floor(state.settings.games/2)+1
+	if(state.score.gameA>=win || state.score.gameB>=win){
+		// 勝者の選手(ペア)名とGAME列をハイライト
+		const winner = state.score.gameA >= win ? "A" : "B"
+		
+		document.getElementById("game"+winner).classList.add("matchEnd")
+		document.getElementById("pair"+winner).classList.add("matchEnd")
+	}
+}
+
+function displayForNextGame(){
+	if(!state.matchFinished) return
+	
+	/* 選手ボタン無効化 */
+	document.querySelectorAll(".playerBtn").forEach(b=>{
+	b.disabled=true
+	})
+
+	/* 得点ボタン無効化 */
+	document.querySelectorAll("#shotButtons button").forEach(b=>{
+	b.disabled=true
+	})
+
+	/* 次の試合ボタン表示 */
+	document.getElementById("nextMatchBtn").classList.remove("hidden")
+
+}
+
+/* =====================================================
+   得点入力ボタン生成
+   ・サーバーかどうかでエース名変更
+   ===================================================== */
+function createShotButtons(){
+	// 選択選手がサーバーかどうか
+	let isServer = (state.selectedPlayer.startsWith("A") && state.currentServer.startsWith("A")) ||
+				   (state.selectedPlayer.startsWith("B") && state.currentServer.startsWith("B"))
+
+	let aceName = isServer ? "サービスエース" : "リターンエース"
+
+	let shots=[
+		{name:aceName,			type:"shot-back"},
+		{name:"ストローク",		type:"shot-back"},
+		{name:"ロブ",			type:"shot-back"},
+		{name:"中ロブ",			type:"shot-back"},
+		{name:"ショートクロス",	type:"shot-back"},
+
+		{name:"パッシング",		type:"shot-common"},
+		{name:"アタック",		type:"shot-common"},
+		{name:"カット",			type:"shot-common"},
+		{name:"ドロップ",		type:"shot-common"},
+		{name:"ツイスト",		type:"shot-common"},
+
+		{name:"ボレー",			type:"shot-front"},
+		{name:"ポーチ",			type:"shot-front"},
+		{name:"スマッシュ",		type:"shot-front"},
+		{name:"ローボレー",		type:"shot-front"},
+		{name:"ハイボレー",		type:"shot-front"},
+	]
+
+	let errors=[
+		{name:"フォルト", 		type:"error-fault",isFault:true},
+		{name:"レシーブ",		type:"error-back",receiveOnly:true},
+
+		{name:"ストローク",		type:"error-back"},
+		{name:"ロブ",			type:"error-back"},
+		{name:"中ロブ",			type:"error-back"},
+		{name:"ショートクロス",	type:"error-back"},
+
+		{name:"パッシング",		type:"error-common"},
+		{name:"アタック",		type:"error-common"},
+		{name:"カット",			type:"error-common"},
+		{name:"ドロップ",		type:"error-common"},
+		{name:"ツイスト",		type:"error-common"},
+		
+		{name:"ボレー",			type:"error-front"},
+		{name:"ポーチ",			type:"error-front"},
+		{name:"スマッシュ",		type:"error-front"},
+		{name:"ローボレー",		type:"error-front"},
+		{name:"ハイボレー",		type:"error-front"}
+	]
+
+	let grid=document.getElementById("shotButtons")
+
+	grid.innerHTML=""
+
+	/* 得点タイトル */
+	let scoreTitle=document.createElement("div")
+	scoreTitle.innerText="【得点】"
+	scoreTitle.style.gridColumn="1 / span 3"
+	scoreTitle.style.fontWeight="bold"
+	scoreTitle.style.textAlign="left"
+	grid.appendChild(scoreTitle)
+
+	/* 得点ボタン生成 */
+	shots.forEach(s=>{
+
+		let btn=document.createElement("button")
+
+		btn.innerText=s.name
+		btn.className=s.type
+
+//		btn.onclick=()=>recordShot(s.name)
+		btn.onclick=()=>handleShotInput(s.name,"得点")
+
+		grid.appendChild(btn)
+
+	})
+
+	/* エラータイトル */
+	let errorTitle=document.createElement("div")
+	errorTitle.innerText="【エラー】"
+	errorTitle.style.gridColumn="1 / span 3"
+	errorTitle.style.fontWeight="bold"
+	errorTitle.style.marginTop="6px"
+	errorTitle.style.textAlign="left"
+	grid.appendChild(errorTitle)
+
+	/* エラーボタン生成 */
+	errors.forEach(e=>{
+
+		/* レシーバーの場合フォルトは非表示 */
+		if(e.isFault && !isServer) return
+		if(e.receiveOnly && isServer) return
+
+		let btn=document.createElement("button")
+
+		btn.className=e.type
+
+		if(e.isFault){
+			btn.id = "btnFault"
+			btn.innerText = (state.is1stServe==false)? "ダブルフォルト" : "フォルト"
+			btn.onclick=()=>serveFault()
+		}else{
+			btn.innerText=e.name
+//			btn.onclick=()=>recordError(e.name)
+			btn.onclick=()=>handleShotInput(e.name,"失点")
+		}
+
+		grid.appendChild(btn)
+
+	})
+
+	/* 得点ボタンエリアの色更新 */
+	updateShotAreaColor()
+
+}
+
+/* =====================================================
+   フォア/バック選択UI
+   ===================================================== */
+function showHandChoice(){
+
+	removeHandChoice()
+
+	let grid = document.getElementById("shotButtons")
+
+	let overlay = document.createElement("div")
+	overlay.id = "handOverlay"
+
+	let shotName = state.pendingShot?.name || ""
+
+	// ★ 得点 / 失点
+	let popupClass =
+		state.pendingShot?.type === "得点"
+			? "hand-popup win-popup"
+			: "hand-popup error-popup"
+
+	overlay.innerHTML = `
+		<div class="${popupClass}">
+
+			<div class="hand-title">
+				${shotName}
+			</div>
+
+			<div class="hand-subtitle">
+				フォア / バック
+			</div>
+
+			<button id="btnFore">フォア</button>
+			<button id="btnBack">バック</button>
+			<button id="btnCancel">取消</button>
+
+		</div>
+	`
+
+	grid.appendChild(overlay)
+
+	document.getElementById("btnFore").onclick =
+		()=>selectHand("フォア")
+
+	document.getElementById("btnBack").onclick =
+		()=>selectHand("バック")
+
+	document.getElementById("btnCancel").onclick =
+		()=>cancelHand()
+}
+
+/* =====================================================
+   フォルトボタンの更新
+   ・フォルト→ダブルフォルト
+   ===================================================== */
+function updateServeButton() {
+	console.log("★★★updateServeButton EXEC★★★")
+    const btn = document.getElementById("btnFault");
+
+    if (!btn) return; // ★安全対策
+
+    btn.innerText = (state.is1stServe==false)? "ダブルフォルト" : "フォルト"
+	console.log("★★★updateServeButton EXEC★★★", state.is1stServe)
+}
+
+/* =====================================================
+   対戦カード表示更新
+   ・シングルス / ダブルスに応じて表示内容を変更
+   ※現在未使用
+   ===================================================== */
+function updatePairLabel(){
+	if(state.isSingles){
+		document.getElementById("pairLabel").innerText=
+		state.singleA+" VS "+state.singleB
+
+	}else{
+		document.getElementById("pairLabel").innerText=
+		state.players.A1+" & "+state.players.A2+
+		" VS "+
+		state.players.B1+" & "+state.players.B2
+	}
+}
+
+/* =====================================================
+   得点入力対象選手を選択
+   ・選択ボタンをハイライト
+   ・ショットボタン更新
+   ===================================================== */
+function selectPlayer(p){
+	state.selectedPlayer=p
+
+	document.querySelectorAll(".playerBtn").forEach(b=>{
+		b.classList.remove("selected")
+	})
+
+	document.getElementById("btn"+p).classList.add("selected")
+
+	updateShotAreaColor()
+
+	createShotButtons()
+}
+
+/* =====================================================
+   得点ボタンエリアの枠色変更
+   ・味方選手選択 → 緑
+   ・対戦相手選択 → オレンジ
+   ===================================================== */
+function updateShotAreaColor(){
+	let grid=document.getElementById("shotButtons")
+
+	grid.classList.remove("teamAActive","teamBActive")
+
+	if(state.selectedPlayer.startsWith("A")){
+		grid.classList.add("teamAActive")
+	}else{
+		grid.classList.add("teamBActive")
+	}
+}
+
+/* =====================================================
+   試合関連ステータス初期化処理
+   ===================================================== */
+function initMatchState(){
+	state.score = {
+		pointA:0,
+		pointB:0,
+		gameA:0,
+		gameB:0,
+		currentGame:1
+	}
+
+	state.gameResults = []
+	state.selectedPlayer = "A1"
+	state.history = []
+	state.historyStack = []
+
+	state.shotStats = {}
+
+	state.serveStats = {
+		A1:{ firstTotal:0, firstIn:0, secondTotal:0, secondIn:0 },
+		A2:{ firstTotal:0, firstIn:0, secondTotal:0, secondIn:0 },
+		B1:{ firstTotal:0, firstIn:0, secondTotal:0, secondIn:0 },
+		B2:{ firstTotal:0, firstIn:0, secondTotal:0, secondIn:0 }
+	}
+
+	state.receiveStats = {
+		A1:{ receiveTotal:0, receiveIn:0 },
+		A2:{ receiveTotal:0, receiveIn:0 },
+		B1:{ receiveTotal:0, receiveIn:0 },
+		B2:{ receiveTotal:0, receiveIn:0 }
+	}
+
+	state.service = "A"
+	state.serverRotation = []
+	state.serveIndex = 0
+	state.is1stServe = true
+	state.currentServer = null
+
+	state.isFinalGame = false
+	state.gameFinished = false
+	state.matchFinished = false
+}
+
+/* =====================================================
+   UI関連初期化処理
+   ===================================================== */
+function initUIState(){
+	if(!state.ui) state.ui = {}
+
+	if(typeof state.ui.openPlayers !== "object"){
+		state.ui.openPlayers = {}
+	}
+
+	if(typeof state.ui.openPair !== "boolean"){
+		state.ui.openPair = false
+	}
+}
+
+/* =====================================================
+   戻すボタン更新
+   ===================================================== */
+function updateUndoButton(){
+
+	const btn = document.getElementById("undoBtn")
+	if(!btn) return
+
+	btn.disabled = state.historyStack.length === 0
+}
+
+/* =====================================================
+   選手ボタン更新
+   ===================================================== */
+function updatePlayerButtons(){
+
+	let disabled = state.matchFinished
+
+	document.querySelectorAll(".playerBtn").forEach(btn=>{
+		btn.disabled = disabled
+	})
+}
+
+/* =====================================================
+   UI全更新
+   ===================================================== */
+function updateUI(){
+	updatePoints()
+	updateServerMark()
+	updateCurrentGameHighlight()
+	highlightWinner()
+	console.log("updateUI★★★　updateServeButton")
+	updateServeButton()
+	updateShotAreaColor()
+	
+	renderScoreboard()
+	renderHistory()
+	renderServeStats()
+	shotStatistics()
+	
+	updatePlayerButtons()
+	createShotButtons()
+	updateUndoButton()
+}
+
