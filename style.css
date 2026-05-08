@@ -18,9 +18,11 @@ display:none;
 /* 選手ボタン */
 .player-area{
 	display:flex;
+	flex-wrap:wrap;
 	align-items:center;
 	justify-content:center;	/* 中央寄せ */
 	position:relative;		/* undo配置用 */
+	gap:8px;
 	margin-top:10px;
 }
 
@@ -33,6 +35,9 @@ display:none;
 .playerBtn{
 /* background:#ddd; */
 border:1px solid #666;
+padding:6px;
+font-size:12px;
+min-width:55px;
 }
 
 .teamA{
@@ -57,9 +62,9 @@ border:3px solid #ff9800;   /* teamBActive と同じ色 */
 #undoBtn{
 	position:absolute;
 	right:0;
-	padding:10px 14px;
+	padding:6px 10px;
 	font-size:14px;
-	min-width:80px;
+	min-width:70px;
 
 	background:#ffeaea;           /* 薄い赤 */
 	border:1px solid #f5bcbc;
