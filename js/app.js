@@ -202,8 +202,6 @@ function recordShot(shotName){
 	if(team==="A") state.score.pointA++
 	else state.score.pointB++
 	
-	
-	
 	console.log("recordShot★★★　updateServeButton")
 	updateServeButton()	// フォルトボタン更新
 
@@ -219,20 +217,24 @@ function recordShot(shotName){
 	    state.serveStats[server].secondIn++
 	}
 
+	// 得点更新
+	updatePoints()
+	
+	// 1ゲーム終了確認
+	checkGame()
+		
+	state.is1stServe = true
+	
 	if(!state.gameFinished){
 		advanceServer()
 	}else{
 		// ゲーム終了なのでインデックス初期化
 		state.serveIndex = 0
+		console.log("INIT serveIndex recordShot")
 	}
-	state.is1stServe = true
-	
-	updatePoints()
-	checkGame()
 	
 	// UI更新
 	updateUI()
-	
 }
 
 
@@ -285,20 +287,21 @@ function recordError(errorName){
 	    receiveStats.receiveTotal++
 	}
 	
+	// ポイント更新
+	updatePoints()
+	checkGame()
+	
+	state.is1stServe=true
 	// ===== サーバー更新 =====
 	if(!state.gameFinished){
 		advanceServer()
 	}else{
 		// ゲーム終了なのでインデックス初期化
 		state.serveIndex = 0
+		console.log("INIT serveIndex recordError")
 	}
 	
-	// ポイント更新
-	updatePoints()
-	checkGame()
-	
 	// ===== サーブ状態リセット =====
-	state.is1stServe=true
 	console.log("recordError★★★　updateServeButton")
 	updateServeButton()	// フォルトボタン更新
 	
