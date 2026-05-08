@@ -18,35 +18,49 @@ const noHandShots = new Set([
    ・スコアボード、選手ボタン、得点ボタンを初期化
    ===================================================== */
 function startMatch(){
-	state.players.A1 = document.getElementById("A1").value.trim() || "A1"
-	state.players.A2 = document.getElementById("A2").value.trim() || "A2"
-	state.players.B1 = document.getElementById("B1").value.trim() || "B1"
-	state.players.B2 = document.getElementById("B2").value.trim() || "B2"
-
-	state.settings.games=parseInt(
-		document.querySelector("input[name='games']:checked").value
-	)
-
 	// UI関連フラグ初期化
 	initUIState()
 	
 	/* 試合関連フラグ初期化 */
 	initMatchState()
-
-	// スコア・ゲーム結果初期化
-//	state.score = {
-//		pointA:0,
-//		pointB:0,
-//		gameA:0,
-//		gameB:0,
-//		currentGame:1
-//	}
-//	state.gameResults = []
 	
-	// シングルス確認
-	let Acount=(state.players.A1?1:0)+(state.players.A2?1:0)
-	let Bcount=(state.players.B1?1:0)+(state.players.B2?1:0)
+	// ① 生データ取得（ここではまだstateに入れない）
+	const A1 = document.getElementById("A1").value.trim();
+	const A2 = document.getElementById("A2").value.trim();
+	const B1 = document.getElementById("B1").value.trim();
+	const B2 = document.getElementById("B2").value.trim();
+
+	// ② 空チェックして人数カウント
+	const Acount = (A1 !== "" ? 1 : 0) + (A2 !== "" ? 1 : 0);
+	const Bcount = (B1 !== "" ? 1 : 0) + (B2 !== "" ? 1 : 0);
+	
+	// シングルス判定
 	state.isSingles=(Acount==1 && Bcount==1)
+	
+	// 選手確定
+	if (state.isSingles) {
+	  // シングルス：2人だけ確定
+	  const A = A1 || A2;
+	  const B = B1 || B2;
+
+	  state.players = {
+	    A1: A || "A1",
+	    B1: B || "B1"
+	  };
+	} else {
+	  // ダブルス：4人構造
+	  state.players = {
+	    A1: A1 || "A1",
+	    A2: A2 || "A2",
+	    B1: B1 || "B1",
+	    B2: B2 || "B2"
+	  };
+	}
+	
+	// ゲーム数
+	state.settings.games=parseInt(
+		document.querySelector("input[name='games']:checked").value
+	)
 
 	// サービス権取得
 	state.service=document.querySelector("input[name='serve']:checked").value
@@ -70,8 +84,7 @@ function startMatch(){
 	
 	createScoreboard()
 	initPlayers()
-	//createShotButtons()
-	
+		
 	/* 画面戻す */
 	updateUI()
 
