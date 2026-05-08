@@ -1,4 +1,4 @@
-const CACHE_NAME = "ST-Insight-v1";
+const CACHE_NAME = "ST-Insight-v1.1";
 
 const urlsToCache = [
   "/ST-Insight/",
@@ -15,21 +15,34 @@ const urlsToCache = [
 ];
 
 // インストール時にキャッシュ
-self.addEventListener("install",(e)=>{
-
-	e.waitUntil(
+self.addEventListener("install",(event)=>{
+	self.skipWaiting();
+	
+	event.waitUntil(
 		caches.open(CACHE_NAME).then(cache=>{
 			return cache.addAll(urlsToCache);
     })
   );
 });
 
-// リクエスト時にキャッシュ優先
-self.addEventListener("fetch",(e)=>{
+// 古いキャッシュを削除
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
+});
 
-	e.respondWith(
-		caches.match(e.request).then(res=>{
-			return res || fetch(e.request)
-		})
-	)
-})
+// リクエスト時、ネット優先、落ちた時だけキャッシュ
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    fetch(event.request).catch(() => caches.match(event.request))
+  );
+});
