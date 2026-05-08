@@ -91,7 +91,6 @@ border:3px solid #ff9800;   /* teamBActive と同じ色 */
 }
 
 /* スコアボード */
-
 .scoreboard{
 width:100%;
 border-collapse:collapse;
@@ -101,7 +100,7 @@ table-layout:fixed;
 
 .scoreboard td,.scoreboard th{
 border:1px solid black;
-padding:8px;
+padding:6px 4px;
 }
 
 .scoreboard td:first-child,
@@ -109,6 +108,13 @@ padding:8px;
 width:140px;
 text-align:left;
 padding-left:8px;
+}
+
+.scoreboard th:last-child,
+.scoreboard td:last-child {
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .scoreboard th.playerHeader{
