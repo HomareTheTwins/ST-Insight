@@ -53,8 +53,8 @@ function buildServerRotation(){
 		}
 	}
 
-	state.serverIndex = 0
-	state.currentServer = getCurrentServer() // ★
+	state.serveIndex = 0
+	state.currentServer = getCurrentServer()
 }
 
 /* =====================================================
@@ -165,16 +165,17 @@ function serveFault(){
 		addHistory("失点","ダブルフォルト")
 		state.is1stServe=true
 		
+			updatePoints()
+		checkGame()
 		// ===== サーバー更新 =====
 		if(!state.gameFinished){
 			advanceServer()
 		}else{
 			// ゲーム終了なのでインデックス初期化
 			state.serveIndex = 0
+			console.log("INIT serveIndex serveFault")
 		}
 		//createShotButtons()]
-		updatePoints()
-		checkGame()
 		updateUI()
 	}
 	console.log("serveFault End")
