@@ -19,7 +19,7 @@ function createScoreboard(){
 		html+="<th class='gameTitle' id='h"+i+"'>"+i+"G</th>"
 	}
 
-	html+="<th class='gameHeader'>GAME</th></tr>"
+	html+="<th class='gameHeader'>G</th></tr>"
 
 	let nameA=state.isSingles
 	?state.singleA
