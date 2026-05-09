@@ -80,6 +80,10 @@ function renderScoreboard(){
 			cell.classList.add("win")
 		}
 	}
+
+	// ゲームカウント更新
+	document.getElementById("gameA").innerText = state.score.gameA
+	document.getElementById("gameB").innerText = state.score.gameB
 }
 /* =====================================================
    サーバー表示更新
