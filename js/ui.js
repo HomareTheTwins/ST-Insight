@@ -16,7 +16,7 @@ function createScoreboard(){
 	let html="<tr><th class='playerHeader'>PLAYER</th>"
 	
 	for(let i=1;i<=state.settings.games;i++){
-		html+="<th id='h"+i+"'>"+i+"G</th>"
+		html+="<th class='gameTitle' id='h"+i+"'>"+i+"G</th>"
 	}
 
 	html+="<th class='gameHeader'>GAME</th></tr>"
