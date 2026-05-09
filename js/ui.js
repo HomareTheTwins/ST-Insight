@@ -97,10 +97,10 @@ function updateServerMark(){
 	let nameB = state.isSingles ? state.singleB : state.players.B1 + " & " + state.players.B2
 
 	document.getElementById("pairA").innerHTML =
-	"<span class='serverMark'>"+markA+"</span><span class='playerName'>"+nameA+"</span>"
+	"<div class='nameCell'><span class='serverMark'>"+markA+"</span><span class='playerName'>"+nameA+"</span></div>"
 
 	document.getElementById("pairB").innerHTML =
-	"<span class='serverMark'>"+markB+"</span><span class='playerName'>"+nameB+"</span>"
+	"<div class='nameCell'><span class='serverMark'>"+markB+"</span><span class='playerName'>"+nameB+"</span></div>"
 }
 
 /* =====================================================
