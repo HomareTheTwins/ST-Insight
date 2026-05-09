@@ -96,53 +96,63 @@ border:3px solid #ff9800;   /* teamBActive と同じ色 */
 
 /* スコアボード */
 .scoreboard{
-width:100%;
-border-collapse:collapse;
-margin-top:10px;
-table-layout:fixed;
+	width:100%;
+	border-collapse:collapse;
+	margin-top:10px;
+	table-layout:fixed;
 }
 
-.scoreboard td,.scoreboard th{
-border:1px solid black;
-padding:6px 4px;
+/* 共通 */
+.scoreboard td,
+.scoreboard th{
+	border:1px solid black;
+	padding:6px 4px;
+	line-height:1.2;
 }
 
 /* 名前列 */
 .scoreboard td:first-child,
 .scoreboard th:first-child{
-	width:120px;
+	width:170px;
 	text-align:left;
 	padding-left:8px;
-	white-space: nowrap;
-	over-flow: hidden;
-	text-overflow: ellipsis;
+	white-space:nowrap;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+
+/* 名前セル内部 */
+.nameCell{
+	display:flex;
+	align-items:center;
 }
 
 /* GAME列 */
 .scoreboard th:last-child,
-.scoreboard td:last-child {
-	font-size: 12px;
-	text-align: center;
-	white-space: nowrap;
-	overflow: hidden;
+.scoreboard td:last-child{
+	font-size:12px;
+	text-align:center;
+	white-space:nowrap;
+	overflow:hidden;
 }
 
 .scoreboard th.playerHeader{
-text-align:center;
-}
-/* サービス権表示用 */
-.serverMark{
-display:inline-block;
-width:20px;
-text-align:center;
+	text-align:center;
 }
 
+/* サービス権 */
+.serverMark{
+	width:20px;
+	flex-shrink:0;
+	text-align:center;
+}
+
+/* 選手名 */
 .playerName{
-display:inline-block;
+	white-space:nowrap;
 }
 
 /* 現在ゲーム */
-
 .currentGame{
 background:#fff59d;
 }
