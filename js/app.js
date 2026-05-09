@@ -324,9 +324,11 @@ function checkGame(){
 		// Aの勝利
 		if(state.score.pointA>=7 && state.score.pointA-state.score.pointB>=2){
 			winGame("A")
+			state.gameFinished = true
 		// Bの勝利
 		}else if(state.score.pointB>=7 && state.score.pointB-state.score.pointA>=2){
 			winGame("B")
+			state.gameFinished = true
 		// ゲーム継続中
 		}else{
 			state.gameFinished = false
@@ -427,7 +429,10 @@ function finishMatch(winner){
 
 	state.matchFinished = true;
 
+	renderScoreboard()
+	updateCurrentGameHighlight()
 	highlightWinner();
+	
 	displayForNextGame()
 
 	alert("試合終了");
