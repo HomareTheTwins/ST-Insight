@@ -113,7 +113,7 @@ border:3px solid #ff9800;   /* teamBActive と同じ色 */
 /* 名前列 */
 .scoreboard td:first-child,
 .scoreboard th:first-child{
-	width:170px;
+	width:155px;			/* htmlと合わせる */
 	text-align:left;
 	padding-left:8px;
 	white-space:nowrap;
@@ -138,6 +138,11 @@ border:3px solid #ff9800;   /* teamBActive と同じ色 */
 
 .scoreboard th.playerHeader{
 	text-align:center;
+}
+
+.gameHeader{
+	font-size:11px;
+	letter-spacing:-0.5px;
 }
 
 /* サービス権 */
