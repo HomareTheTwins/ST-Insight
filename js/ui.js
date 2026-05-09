@@ -237,7 +237,7 @@ function createShotButtons(){
 
 	/* エラータイトル */
 	let errorTitle=document.createElement("div")
-	errorTitle.innerText="【エラー】"
+	errorTitle.innerText="【ミス】"
 	errorTitle.style.gridColumn="1 / span 3"
 	errorTitle.style.fontWeight="bold"
 	errorTitle.style.marginTop="6px"
