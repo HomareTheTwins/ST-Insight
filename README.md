@@ -1,3 +1,12 @@
-# ST-Insight
+# ST-Insight™
+ソフトテニス向け試合分析アプリ
 
-本ソフトウェアの無断転載・再配布・商用利用は禁止します。
+## Features
+- スコア記録
+- ショット記録
+- サーブ成功率分析
+- ショット分析
+
+---
+
+©2026 ST-Insight™ All Rights Reserved.
