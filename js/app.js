@@ -202,7 +202,6 @@ function recordShot(shotName){
 	if(team==="A") state.score.pointA++
 	else state.score.pointB++
 	
-	console.log("recordShot★★★　updateServeButton")
 	updateServeButton()	// フォルトボタン更新
 
 	// 得点履歴追加
@@ -230,7 +229,6 @@ function recordShot(shotName){
 	}else{
 		// ゲーム終了なのでインデックス初期化
 		state.serveIndex = 0
-		console.log("INIT serveIndex recordShot")
 	}
 	
 	// UI更新
@@ -298,11 +296,9 @@ function recordError(errorName){
 	}else{
 		// ゲーム終了なのでインデックス初期化
 		state.serveIndex = 0
-		console.log("INIT serveIndex recordError")
 	}
 	
 	// ===== サーブ状態リセット =====
-	console.log("recordError★★★　updateServeButton")
 	updateServeButton()	// フォルトボタン更新
 	
 	// 履歴追加
@@ -462,14 +458,3 @@ function nextMatch(){
 	})
 }
 
-// // service worker登録
-// if ("serviceWorker" in navigator) {
-//   window.addEventListener("load", async () => {
-//     try {
-//       const reg = await navigator.serviceWorker.register("./service-worker.js")
-//       console.log("SW registered:", reg.scope)
-//     } catch (e) {
-//       console.error("SW error:", e)
-//     }
-//   })
-// }
