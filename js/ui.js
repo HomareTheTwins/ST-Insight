@@ -232,7 +232,7 @@ function createShotButtons(){
 		btn.innerText=s.name
 		btn.className=s.type
 
-//		btn.onclick=()=>recordShot(s.name)
+		btn.disabled = state.matchFinished
 		btn.onclick=()=>handleShotInput(s.name,"得点")
 
 		grid.appendChild(btn)
@@ -259,13 +259,14 @@ function createShotButtons(){
 
 		btn.className=e.type
 
+		btn.disabled = state.matchFinished
+		
 		if(e.isFault){
 			btn.id = "btnFault"
 			btn.innerText = (state.is1stServe==false)? "ダブルフォルト" : "フォルト"
 			btn.onclick=()=>serveFault()
 		}else{
 			btn.innerText=e.name
-//			btn.onclick=()=>recordError(e.name)
 			btn.onclick=()=>handleShotInput(e.name,"失点")
 		}
 
@@ -333,13 +334,11 @@ function showHandChoice(){
    ・フォルト→ダブルフォルト
    ===================================================== */
 function updateServeButton() {
-	console.log("★★★updateServeButton EXEC★★★")
     const btn = document.getElementById("btnFault");
 
     if (!btn) return; // ★安全対策
 
     btn.innerText = (state.is1stServe==false)? "ダブルフォルト" : "フォルト"
-	console.log("★★★updateServeButton EXEC★★★", state.is1stServe)
 }
 
 /* =====================================================
@@ -486,7 +485,7 @@ function updateUI(){
 	updateServerMark()
 	updateCurrentGameHighlight()
 	highlightWinner()
-	console.log("updateUI★★★　updateServeButton")
+
 	updateServeButton()
 	updateShotAreaColor()
 	
