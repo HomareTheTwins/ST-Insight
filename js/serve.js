@@ -62,8 +62,6 @@ function buildServerRotation(){
    ・ポイント確定後に実施
    ===================================================== */
 function advanceServer(){
-	console.log("advanceServer START★★★")
-	
 	// 1st ⇔ 2nd切り替え
 	state.is1stServe == true ? false : true
 	
@@ -76,8 +74,6 @@ function advanceServer(){
 	}
 	
 	state.currentServer = state.serverRotation[state.serveIndex]
-	
-	console.log("advanceServer End★★★")
 }
 
 /* =====================================================
@@ -88,8 +84,6 @@ function advanceServer(){
    ※現在未使用
    ===================================================== */
 function updateServeOrder(){
-	console.log("updateServeOrder START★★★")
-
 	// サービス権の変更
 	// 通常ゲームの場合
 	if(!state.isFinalGame){
@@ -128,8 +122,6 @@ function updateServeOrder(){
 	state.serveIndex = 0
 	state.serveTurnCount = 0
 	state.currentServer = state.serveOrder[state.serveIndex]
-	
-	console.log("updateServeOrder End★★★")
 }
 
 /* =====================================================
@@ -141,8 +133,6 @@ function serveFault(){
 	
 	let server = getCurrentServer()
 	
-	console.log("serveFault Start")
-
 	// 1st失敗：フォルト→ダブルフォルトへ
 	if(state.is1stServe){
 	
@@ -173,18 +163,10 @@ function serveFault(){
 		}else{
 			// ゲーム終了なのでインデックス初期化
 			state.serveIndex = 0
-			console.log("INIT serveIndex serveFault")
 		}
 		//createShotButtons()]
 		updateUI()
 	}
-	console.log("serveFault End")
-
-	console.log("updateServeButton serveFault★")
-	//updateServeButton()
-	
-	// サービススタッツ更新
-	//renderServeStats()
 }
 
 /* =====================================================
