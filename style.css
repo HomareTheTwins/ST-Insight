@@ -130,7 +130,6 @@ border:3px solid #ff9800;   /* teamBActive と同じ色 */
 /* GAME列 */
 .scoreboard th:last-child,
 .scoreboard td:last-child{
-	font-size:12px;
 	text-align:center;
 	white-space:nowrap;
 	overflow:hidden;
