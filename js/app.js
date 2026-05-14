@@ -259,16 +259,21 @@ function recordError(errorName){
 	if(!state.is1stServe){
 		// 選択中の選手がサーバー
 		if(server == selectedPlayer){
-			// ダブルフォルトはserveFault()で加算
+			// ダブルフォルト以外の失点（ダブルフォルトはserveFault()で加算する）
 			if(!(errorName === "ダブルフォルト")){
-			state.serveStats[server].secondTotal++
-			state.serveStats[server].secondIn++
+				state.serveStats[server].secondTotal++
+				state.serveStats[server].secondIn++
 			}
 		// 他の選手のミス
 		}else{
 			state.serveStats[server].secondTotal++
 			state.serveStats[server].secondIn++
 		}
+
+	// 1st後のミスショット
+	}else{
+	    state.serveStats[server].firstTotal++
+	    state.serveStats[server].firstIn++
 	}
 	
 	// ===== レシーブ統計 =====
