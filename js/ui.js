@@ -270,7 +270,7 @@ const detailShotsBase = [
 	{name:"ショートクロス",	type:"shot-back"},
 
 	{name:"パッシング",		type:"shot-common"},
-	{name:"アタック",		type:"shot-common"},
+	{name:"前衛アタック",	type:"shot-common"},
 	{name:"カット",			type:"shot-common"},
 	{name:"ドロップ",		type:"shot-common"},
 	{name:"ツイスト",		type:"shot-common"},
@@ -328,7 +328,7 @@ const detailMissShotsBase = [
 	{name:"ショートクロス",	type:"error-back"},
 
 	{name:"パッシング",		type:"error-common"},
-	{name:"アタック",		type:"error-common"},
+	{name:"前衛アタック",	type:"error-common"},
 	{name:"カット",			type:"error-common"},
 	{name:"ドロップ",		type:"error-common"},
 	{name:"ツイスト",		type:"error-common"},
@@ -349,7 +349,7 @@ const simpleMissShotsBase = [
 	{name:"ロブ",			type:"error-back"},
 	{name:"ショートクロス",	type:"error-back"},
 
-	{name:"アタック",		type:"error-common"},
+	{name:"前衛アタック",	type:"error-common"},
 	{name:"ドロップ",		type:"error-common"},
 	
 	{name:"ボレー",			type:"error-front"},
