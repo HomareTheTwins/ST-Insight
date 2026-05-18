@@ -181,10 +181,11 @@ function createShotButtons(){
 	/* 得点タイトル */
 	let scoreHeader=document.createElement("div")
 
-	scoreHeader.style.gridColumn="1 / span 3"
+	scoreHeader.style.gridColumn="1 / -1"
 	scoreHeader.style.display="flex"
 	scoreHeader.style.justifyContent="space-between"
 	scoreHeader.style.alignItems="center"
+	scoreHeader.style.width="100%"
 
 	let scoreTitle=document.createElement("span")
 	scoreTitle.innerText="【得点】"
@@ -192,7 +193,7 @@ function createShotButtons(){
 
 	let modeBtn=document.createElement("button")
 	modeBtn.className = "modeToggleBtn"
-	modeBtn.innerText = (state.inputMode === "simple") ? "簡易モード" : "詳細モード"
+	modeBtn.innerText = (state.inputMode === "simple") ? "詳細モードへ" : "簡易モードへ"
 
 	modeBtn.onclick = () => {
 		state.inputMode = (state.inputMode === "simple") ? "detail" : "simple"
