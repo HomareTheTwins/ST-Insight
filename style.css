@@ -279,6 +279,7 @@ background:#FFFF00;
 .modeToggleBtn{
 	font-size:12px;
 	padding:2px 8px;
+	flex-shrink:0;
 }
 
 /* どちらのペアが選択されているか */
