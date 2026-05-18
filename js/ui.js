@@ -170,60 +170,42 @@ function createShotButtons(){
 
 	let aceName = isServer ? "サービスエース" : "リターンエース"
 
-	let shots=[
-		{name:aceName,			type:"shot-back"},
-		{name:"ストローク",		type:"shot-back"},
-		{name:"ロブ",			type:"shot-back"},
-		{name:"中ロブ",			type:"shot-back"},
-		{name:"ショートクロス",	type:"shot-back"},
-
-		{name:"パッシング",		type:"shot-common"},
-		{name:"アタック",		type:"shot-common"},
-		{name:"カット",			type:"shot-common"},
-		{name:"ドロップ",		type:"shot-common"},
-		{name:"ツイスト",		type:"shot-common"},
-
-		{name:"ボレー",			type:"shot-front"},
-		{name:"ポーチ",			type:"shot-front"},
-		{name:"スマッシュ",		type:"shot-front"},
-		{name:"ローボレー",		type:"shot-front"},
-		{name:"ハイボレー",		type:"shot-front"},
-	]
-
-	let errors=[
-		{name:"フォルト", 		type:"error-fault",isFault:true},
-		{name:"レシーブ",		type:"error-back",receiveOnly:true},
-
-		{name:"ストローク",		type:"error-back"},
-		{name:"ロブ",			type:"error-back"},
-		{name:"中ロブ",			type:"error-back"},
-		{name:"ショートクロス",	type:"error-back"},
-
-		{name:"パッシング",		type:"error-common"},
-		{name:"アタック",		type:"error-common"},
-		{name:"カット",			type:"error-common"},
-		{name:"ドロップ",		type:"error-common"},
-		{name:"ツイスト",		type:"error-common"},
-		
-		{name:"ボレー",			type:"error-front"},
-		{name:"ポーチ",			type:"error-front"},
-		{name:"スマッシュ",		type:"error-front"},
-		{name:"ローボレー",		type:"error-front"},
-		{name:"ハイボレー",		type:"error-front"}
-	]
-
+	let shots = createShots(isServer)
+	
+	let errors = createMissShots(state.is1stServe)
+	
 	let grid=document.getElementById("shotButtons")
 
 	grid.innerHTML=""
 
 	/* 得点タイトル */
-	let scoreTitle=document.createElement("div")
-	scoreTitle.innerText="【得点】"
-	scoreTitle.style.gridColumn="1 / span 3"
-	scoreTitle.style.fontWeight="bold"
-	scoreTitle.style.textAlign="left"
-	grid.appendChild(scoreTitle)
+	let scoreHeader=document.createElement("div")
 
+	scoreHeader.style.gridColumn="1 / span 3"
+	scoreHeader.style.display="flex"
+	scoreHeader.style.justifyContent="space-between"
+	scoreHeader.style.alignItems="center"
+
+	let scoreTitle=document.createElement("span")
+	scoreTitle.innerText="【得点】"
+	scoreTitle.style.fontWeight="bold"
+
+	let modeBtn=document.createElement("button")
+	modeBtn.className = "modeToggleBtn"
+	modeBtn.innerText = (state.inputMode === "simple") ? "簡易モード" : "詳細モード"
+
+	modeBtn.onclick = () => {
+		state.inputMode = (state.inputMode === "simple") ? "detail" : "simple"
+
+		localStorage.setItem("inputMode",state.inputMode)
+		
+		createShotButtons()
+	}
+
+	scoreHeader.appendChild(scoreTitle)
+	scoreHeader.appendChild(modeBtn)
+
+	grid.appendChild(scoreHeader)
 	/* 得点ボタン生成 */
 	shots.forEach(s=>{
 
@@ -241,7 +223,7 @@ function createShotButtons(){
 
 	/* エラータイトル */
 	let errorTitle=document.createElement("div")
-	errorTitle.innerText="【ミス】"
+	errorTitle.innerText="【エラー】"
 	errorTitle.style.gridColumn="1 / span 3"
 	errorTitle.style.fontWeight="bold"
 	errorTitle.style.marginTop="6px"
@@ -258,9 +240,9 @@ function createShotButtons(){
 		let btn=document.createElement("button")
 
 		btn.className=e.type
-
-		btn.disabled = state.matchFinished
 		
+		btn.disabled = state.matchFinished
+
 		if(e.isFault){
 			btn.id = "btnFault"
 			btn.innerText = (state.is1stServe==false)? "ダブルフォルト" : "フォルト"
@@ -276,7 +258,122 @@ function createShotButtons(){
 
 	/* 得点ボタンエリアの色更新 */
 	updateShotAreaColor()
+}
 
+/* 詳細モード：ベース配列 */
+const detailShotsBase = [
+	{key :"ace",			type:"shot-back"},
+	{name:"ストローク",		type:"shot-back"},
+	{name:"ロブ",			type:"shot-back"},
+	{name:"中ロブ",			type:"shot-back"},
+	{name:"ショートクロス",	type:"shot-back"},
+
+	{name:"パッシング",		type:"shot-common"},
+	{name:"アタック",		type:"shot-common"},
+	{name:"カット",			type:"shot-common"},
+	{name:"ドロップ",		type:"shot-common"},
+	{name:"ツイスト",		type:"shot-common"},
+
+	{name:"ボレー",			type:"shot-front"},
+	{name:"ポーチ",			type:"shot-front"},
+	{name:"スマッシュ",		type:"shot-front"},
+	{name:"ローボレー",		type:"shot-front"},
+	{name:"ハイボレー",		type:"shot-front"},
+]
+
+/* 簡易モード：ベース配列 */
+const simpleShotsBase = [
+	{key :"ace",			type:"shot-back"},
+	{name:"ストローク",		type:"shot-back"},
+	{name:"ロブ",			type:"shot-back"},
+	{name:"ショートクロス",	type:"shot-back"},
+
+	{name:"前衛アタック",	type:"shot-common"},
+	{name:"ドロップ",		type:"shot-common"},
+
+	{name:"ボレー",			type:"shot-front"},
+	{name:"スマッシュ",		type:"shot-front"},
+]
+
+/* =====================================================
+   得点ショットボタン生成処理（詳細モード/簡易モード）
+   ===================================================== */
+function createShots(isServer){
+	let aceName = isServer ? "サービスエース" : "リターンエース"
+	
+	let shotsBase = state.inputMode === "detail" ? detailShotsBase : simpleShotsBase
+	
+	let shots = shotsBase.map(shot => {
+		if(shot.key === "ace"){
+			return {
+				...shot,
+				name:aceName
+			}
+		}
+		return shot
+	})
+	
+	return shots
+}
+
+/* 詳細モード：ベース配列(ミス) */
+const detailMissShotsBase = [
+	{key :"fault",			type:"error-fault",isFault:true},
+	{name:"レシーブ",		type:"error-back",receiveOnly:true},
+
+	{name:"ストローク",		type:"error-back"},
+	{name:"ロブ",			type:"error-back"},
+	{name:"中ロブ",			type:"error-back"},
+	{name:"ショートクロス",	type:"error-back"},
+
+	{name:"パッシング",		type:"error-common"},
+	{name:"アタック",		type:"error-common"},
+	{name:"カット",			type:"error-common"},
+	{name:"ドロップ",		type:"error-common"},
+	{name:"ツイスト",		type:"error-common"},
+	
+	{name:"ボレー",			type:"error-front"},
+	{name:"ポーチ",			type:"error-front"},
+	{name:"スマッシュ",		type:"error-front"},
+	{name:"ローボレー",		type:"error-front"},
+	{name:"ハイボレー",		type:"error-front"}
+]
+
+/* 簡易モード：ベース配列(ミス) */
+const simpleMissShotsBase = [
+	{key :"fault",			type:"error-fault",isFault:true},
+	{name:"レシーブ",		type:"error-back",receiveOnly:true},
+
+	{name:"ストローク",		type:"error-back"},
+	{name:"ロブ",			type:"error-back"},
+	{name:"ショートクロス",	type:"error-back"},
+
+	{name:"アタック",		type:"error-common"},
+	{name:"ドロップ",		type:"error-common"},
+	
+	{name:"ボレー",			type:"error-front"},
+	{name:"スマッシュ",		type:"error-front"},
+]
+
+/* =====================================================
+   ミスショットボタン生成処理（詳細モード/簡易モード）
+   ===================================================== */
+function createMissShots(is1stServe){
+	let faultName = is1stServe ? "フォルト" : "ダブルフォルト"
+	
+	let shotsBase = state.inputMode === "detail" ? detailMissShotsBase : simpleMissShotsBase
+	
+	let shots = shotsBase.map(shot => {
+		if(shot.key === "fault"){
+			return {
+				...shot,
+				name:faultName
+			}
+		}
+		return shot
+	})
+	
+	return shots
 }
 
 /* =====================================================
