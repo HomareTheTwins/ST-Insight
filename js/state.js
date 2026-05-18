@@ -76,7 +76,10 @@ let state={
 	gameFinished:false,	// false：ゲーム継続中/true：各ゲーム終了時（次のゲームスタート→★false）
 	
 	/* 試合終了フラグ */
-	matchFinished:false
+	matchFinished:false,
+	
+	/* 入力モード */
+	inputMode : localStorage.getItem("inputMode") || "detail"	/* detail：詳細モード / simple : 簡易モード */
 }
 
 // ショット分析設定
