@@ -274,6 +274,13 @@ background:#FFFF00;
 		opacity:1;
 	}
 }
+
+/* 詳細/簡易モード切替 */
+.modeToggleBtn{
+	font-size:12px;
+	padding:2px 8px;
+}
+
 /* どちらのペアが選択されているか */
 .teamAActive{
 border-color:#4CAF50;
