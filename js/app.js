@@ -294,6 +294,11 @@ function recordError(errorName){
 	
 	// ポイント更新
 	updatePoints()
+	
+	// 履歴追加
+	addHistory("失点", errorName)
+
+	// 1ゲーム終了確認
 	checkGame()
 	
 	state.is1stServe=true
@@ -307,9 +312,6 @@ function recordError(errorName){
 	
 	// ===== サーブ状態リセット =====
 	updateServeButton()	// フォルトボタン更新
-	
-	// 履歴追加
-	addHistory("失点", errorName)
 
 	// UI更新
 	updateUI()
@@ -358,6 +360,14 @@ function checkGame(){
 		state.gameFinished = false
 	}
 
+	// ゲーム数を得点履歴に表示
+	if(state.gameFinished && !state.matchFinished){
+		addHistory(
+			"system",
+			`${state.score.currentGame}ゲーム目`
+		)
+	}
+	
 	if(!state.matchFinished){
 		// ボタンの更新
 		createShotButtons()
@@ -400,12 +410,6 @@ function winGame(team){
 	state.score.pointB=0
 	state.score.currentGame++
 
-	// 得点履歴にゲーム数出力
-	addHistory(
-		"system",
-		`${state.score.currentGame}ゲーム目`
-	)
-	
 	// サービス権更新
 	state.service=state.service === "A" ? "B" : "A"
 	buildServerRotation()
