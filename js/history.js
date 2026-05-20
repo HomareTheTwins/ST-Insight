@@ -7,9 +7,14 @@
 /* =====================================================
    得点履歴登録
    ===================================================== */
-function addHistory(type,name){
-
-	let playerName = state.players[state.selectedPlayer] || state.selectedPlayer
+function addHistory(type, name, player=null){
+	// system表示用
+	let playerName = ""
+	
+	// 通常履歴のみ選手名取得
+	if(type !== "system"){
+		playerName = player || state.players[state.selectedPlayer] || state.selectedPlayer
+	}
 	
 	state.history.push({
 	    type:type,
@@ -18,9 +23,21 @@ function addHistory(type,name){
 	    time:Date.now()
 	})
 	
+	/* =========================
+	   システム履歴の場合は以下の処理で終了
+	   ========================= */
+	if(type === "system"){
+		// 表示中なら再描画
+		if(!document.getElementById("historyArea").classList.contains("hidden")){
+		    renderHistory()
+		}
+		return
+	}
+
+	/* =========================
+	   ショット統計
+	   ========================= */
 	// 初期化
-	/* ショットスタッツ */
-	// ===== 集計 =====
 	if(!state.shotStats[playerName]){
 	    state.shotStats[playerName]={
 	    	shots:{}	// win / error管理
@@ -51,15 +68,19 @@ function addHistory(type,name){
 
 /* =====================================================
    得点履歴表示
+   ・type=systemならシステム文言表示
    ===================================================== */
 function renderHistory(){
 
 	let area=document.getElementById("historyArea")
 
 	area.innerHTML=state.history.map(h=>{
-	    return `${h.player}：${h.type}-${h.name}`
+		// system履歴
+		if(h.type === "system"){
+			return `=== ${h.name} ===`
+		}
+		return `${h.player}：${h.type}-${h.name}`
 	}).join("<br>")
-
 }
 
 /* =====================================================
