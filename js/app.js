@@ -4,6 +4,12 @@
  無断転載・再配布禁止
 */
 
+// アプリ名
+const APP_NAME = "ST-Insight"
+
+// バージョン情報
+const APP_VERSION = "v1.27-Beta"
+
 // フォア/バック不要ショット
 const noHandShots = new Set([
 	"サービスエース",
@@ -73,8 +79,12 @@ function startMatch(){
 	
 	// サービス順作成
 	buildServerRotation()
-	
+
+	// 設定&バージョン情報非表示
 	document.getElementById("setup").classList.add("hidden")
+	document.getElementById("appInfo").classList.add("hidden")
+	
+	// 試合開始後画面表示
 	document.getElementById("match").classList.remove("hidden")
 
 	const btn = document.getElementById("undoBtn")
@@ -480,3 +490,9 @@ function nextMatch(){
 	})
 }
 
+function init(){
+	// バージョン情報表示
+	document.getElementById("appInfo").innerText = `${APP_NAME} ${APP_VERSION}`
+}
+
+init()
