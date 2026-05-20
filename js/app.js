@@ -361,7 +361,7 @@ function checkGame(){
 	}
 
 	// ゲーム数を得点履歴に表示
-	if(state.gameFinished && !state.matchFinished){
+	if(state.gameFinished && !state.matchFinished && !state.isFinalGame){
 		addHistory(
 			"system",
 			`${state.score.currentGame}ゲーム目`
@@ -404,6 +404,11 @@ function winGame(team){
 	// ファイナルゲーム判定
 	state.isFinalGame = (state.score.gameA == Math.floor(state.settings.games/2) &&
 	state.score.gameB == Math.floor(state.settings.games/2))
+
+	// ファイナルゲーム時、得点履歴にその旨表示
+	if(state.isFinalGame){
+		addHistory("system","ファイナルゲーム")
+	}
 
 	// 1ゲーム終了のため初期化
 	state.score.pointA=0
