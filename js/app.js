@@ -87,7 +87,9 @@ function startMatch(){
 		
 	/* 画面戻す */
 	updateUI()
-
+	
+	// 得点履歴にゲーム数出力
+	addHistory("system", `1ゲーム目`)
 }
 
 /* =====================================================
@@ -398,6 +400,12 @@ function winGame(team){
 	state.score.pointB=0
 	state.score.currentGame++
 
+	// 得点履歴にゲーム数出力
+	addHistory(
+		"system",
+		`${state.score.currentGame}ゲーム目`
+	)
+	
 	// サービス権更新
 	state.service=state.service === "A" ? "B" : "A"
 	buildServerRotation()
